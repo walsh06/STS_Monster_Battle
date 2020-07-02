@@ -1,9 +1,11 @@
 import logging
 
-from monster import FatGremlin, GremlinWizard, MadGremlin, BlueSlaver, RedSlaver, Cultist, Pointy, Centurion
+from monster import Monster, FatGremlin, GremlinWizard, MadGremlin, BlueSlaver, RedSlaver, Cultist, Pointy, Centurion, JawWorm
 from utils import print_message
 
 def takeTurn(attacker, defender):
+    attacker.startTurn()
+
     action = attacker.getAction()
     if action.damage is not None:
         defender.takeDamage(action.damage, action.hits)
@@ -11,7 +13,10 @@ def takeTurn(attacker, defender):
         defender.makeWeak(action.weak)
     if action.vunerable is not None:
         defender.makeVunerable(action.vunerable)
-
+    if action.block is not None:
+        attacker.addBlock(action.block)
+    if action.strength is not None:
+        attacker.addStrength(action.strength)
     attacker.endTurn()
 
 def getMonster(name):
@@ -23,7 +28,8 @@ def getMonster(name):
         "Fat Gremlin": FatGremlin("Fat Gremlin", 13, 0, 0),
         "Cultist": Cultist("Cultist", 48, 0, 0),
         "Pointy": Pointy("Pointy", 30, 0, 0),
-        "Centurion": Centurion("Centurion", 76, 0, 0)
+        "Centurion": Centurion("Centurion", 76, 0, 0),
+        "Jaw Worm": JawWorm("Jaw Worm", 40, 0, 0)
     }
     return monsters[name]
 
@@ -75,8 +81,8 @@ def main():
     logging.critical(results)
     convertToCSV(results)
 
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.DEBUG)
 
 main()
 
-#fight("Cultist", "Pointy", 1)
+# fight("Cultist", "Jaw Worm", 1)
