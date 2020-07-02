@@ -1,5 +1,8 @@
 import random 
+import logging
+
 from utils import print_message
+from action import Action
 
 class Monster(object):
 
@@ -16,11 +19,11 @@ class Monster(object):
     def getAction(self):
         pass
 
-    def takeDamage(self, damage):
-        print_message("{} takes {} damage".format(self.name, damage))
+    def takeDamage(self, damage, hits):
+        logging.debug("{} takes {} damage {} time(s)".format(self.name, damage, hits))
         if self.vunerable > 0:
             damage = damage * 1.5
-        self.health -= damage
+        self.health -= damage * hits
 
     def isAlive(self):
         return self.health > 0
@@ -55,8 +58,8 @@ class MadGremlin(Monster):
     def getAction(self):
         return Action(damage=self.getDamage(4))
 
-    def takeDamage(self, damage):
-        super(MadGremlin, self).takeDamage(damage)
+    def takeDamage(self, damage, hits):
+        super(MadGremlin, self).takeDamage(damage, hits)
         self.strength += 1
 
 
@@ -140,9 +143,22 @@ class Cultist(Monster):
         if self.turns > 1:
             self.strength += 3
 
-class Action():
 
-    def __init__(self, damage=None, vunerable=None, weak=None):
-        self.damage = damage
-        self.vunerable = vunerable
-        self.weak = weak
+class Pointy(Monster):
+
+    def getAction(self):
+        return Action(damage=5, hits=2)
+
+
+class Centurion(Monster):
+
+    def getAction(self):
+        actions = {
+            "fury": Action(damage=self.getDamage(6), hits=3),
+            "slash": Action(damage=self.getDamage(12))
+        }
+        chance = random.randint(0, 100)
+        if chance < 65:
+            return actions['fury']
+        else:
+            return actions['slash']

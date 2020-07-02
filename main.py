@@ -1,10 +1,12 @@
-from monster import FatGremlin, GremlinWizard, MadGremlin, BlueSlaver, RedSlaver, Cultist
+import logging
+
+from monster import FatGremlin, GremlinWizard, MadGremlin, BlueSlaver, RedSlaver, Cultist, Pointy, Centurion
 from utils import print_message
 
 def takeTurn(attacker, defender):
     action = attacker.getAction()
     if action.damage is not None:
-        defender.takeDamage(action.damage)
+        defender.takeDamage(action.damage, action.hits)
     if action.weak is not None:
         defender.makeWeak(action.weak)
     if action.vunerable is not None:
@@ -19,7 +21,9 @@ def getMonster(name):
         "Mad Gremlin": MadGremlin("Mad Gremlin", 20, 0, 0),
         "Gremlin Wizard": GremlinWizard("Gremlin Wizard", 21, 0, 0),
         "Fat Gremlin": FatGremlin("Fat Gremlin", 13, 0, 0),
-        "Cultist": Cultist("Cultist", 48, 0, 0)
+        "Cultist": Cultist("Cultist", 48, 0, 0),
+        "Pointy": Pointy("Pointy", 30, 0, 0),
+        "Centurion": Centurion("Centurion", 76, 0, 0)
     }
     return monsters[name]
 
@@ -33,20 +37,20 @@ def fight(attacker, defender, iterations=1000):
         while monster_one.isAlive() and monster_two.isAlive():
             takeTurn(monster_one, monster_two)
             if not monster_two.isAlive():
-                print_message("{} wins".format(monster_one.name))
+                logging.debug("{} wins".format(monster_one.name))
                 wins[0] += 1
                 break
             
             takeTurn(monster_two, monster_one)
             if not monster_one.isAlive():
-                print_message("{} wins".format(monster_two.name))
+                logging.debug("{} wins".format(monster_two.name))
                 wins[1] += 1
                 break
 
-            print_message("{} {}".format(monster_one, monster_two))
+            logging.debug("{} {}".format(monster_one, monster_two))
     
-    print_message("{}: {} wins".format(attacker, wins[0]), True)
-    print_message("{}: {} wins".format(defender, wins[1]), True)
+    logging.debug("{}: {} wins".format(attacker, wins[0]))
+    logging.debug("{}: {} wins".format(defender, wins[1]))
 
     return wins[0]
 
@@ -59,7 +63,7 @@ def convertToCSV(results):
             f.write("{},{}\n".format(monster, ",".join([str(monster_results[header]) for header in headers])))
 
 def main():
-    monsters = ("Blue Slaver", "Red Slaver", "Mad Gremlin", "Fat Gremlin", "Gremlin Wizard", "Cultist")
+    monsters = ("Blue Slaver", "Red Slaver", "Mad Gremlin", "Fat Gremlin", "Gremlin Wizard", "Cultist", "Pointy", "Centurion")
     results = {}
     for attacker in monsters:
         for defender in monsters:
@@ -68,9 +72,11 @@ def main():
                 results[attacker] = {}
             results[attacker][defender] = wins
     
-    print results
+    logging.critical(results)
     convertToCSV(results)
+
+logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
-#fight("Cultist", "Red Slaver", 1)
+#fight("Cultist", "Pointy", 1)
