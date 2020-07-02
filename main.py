@@ -63,7 +63,7 @@ def convertToCSV(results):
             f.write("{},{}\n".format(monster, ",".join([str(monster_results[header]) for header in headers])))
 
 def main():
-    monsters = ("Blue Slaver", "Red Slaver", "Mad Gremlin", "Fat Gremlin", "Gremlin Wizard", "Cultist", "Pointy", "Centurion")
+    monsters = ("Blue Slaver", "Red Slaver", "Mad Gremlin", "Fat Gremlin", "Gremlin Wizard", "Cultist", "Pointy", "Centurion", "Jaw Worm")
     results = {}
     for attacker in monsters:
         for defender in monsters:
