@@ -1,6 +1,9 @@
 import logging
 
-from monster import Monster, FatGremlin, GremlinWizard, MadGremlin, BlueSlaver, RedSlaver, Cultist, Pointy, Centurion, JawWorm
+from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin
+from monsters.slavers import BlueSlaver, RedSlaver
+from monsters.misc import Cultist, Pointy, Centurion, JawWorm
+
 from utils import print_message
 
 def takeTurn(attacker, defender):
@@ -81,7 +84,7 @@ def main():
     logging.critical(results)
     convertToCSV(results)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
