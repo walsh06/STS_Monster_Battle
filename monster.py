@@ -11,19 +11,29 @@ class Monster(object):
         self.health = health
         self.strength = strength
         self.dex = dex
+        self.block = 0
         self.weak = 0
         self.vunerable = 0
+        self.frail = 0
         self.moveQueue = []
         self.turns = 0
 
     def getAction(self):
         pass
 
-    def takeDamage(self, damage, hits):
-        logging.debug("{} takes {} damage {} time(s)".format(self.name, damage, hits))
+    def takeDamage(self, damage, hits=1):
         if self.vunerable > 0:
             damage = damage * 1.5
-        self.health -= damage * hits
+
+        for x in range(0, hits):
+            if damage > self.block:
+                adjusted_damage = damage - self.block
+                self.block = 0
+            else:
+                self.block = self.block - damage
+                adjusted_damage = 0
+            logging.debug("{} takes {} damage".format(self.name, adjusted_damage))
+            self.health -= damage
 
     def isAlive(self):
         return self.health > 0
@@ -34,12 +44,27 @@ class Monster(object):
     def makeVunerable(self, vunerable):
         self.vunerable = vunerable
 
+    def makeFrail(self, frail):
+        self.frail = frail
+
+    def addBlock(self, block):
+        if self.frail > 0:
+            block = block * 0.5
+        self.block = block + self.dex
+
+    def addStrength(self, strength):
+        self.strength += strength
+
     def __str__(self):
         return "{} - {} HP".format(self.name, self.health)
+
+    def startTurn(self):
+        self.block = 0
 
     def endTurn(self):
         self.weak = 0 if self.weak <= 0 else self.weak-1
         self.vunerable = 0 if self.vunerable <= 0 else self.vunerable-1
+        self.frail = 0 if self.frail <= 0 else self.frail-1
 
     def getDamage(self, baseDamage):
         damage = baseDamage + self.strength
@@ -60,7 +85,7 @@ class MadGremlin(Monster):
 
     def takeDamage(self, damage, hits):
         super(MadGremlin, self).takeDamage(damage, hits)
-        self.strength += 1
+        self.addStrength(1)
 
 
 class GremlinWizard(Monster):
@@ -162,3 +187,47 @@ class Centurion(Monster):
             return actions['fury']
         else:
             return actions['slash']
+
+
+class JawWorm(Monster):
+
+    def __init__(self, name, health, strength, dex):
+        super(JawWorm, self).__init__(name, health, strength, dex)
+        self.block = 6
+        self.strength += 3
+
+    def updateQueue(self, action):
+        self.moveQueue.insert(0, action)
+        if len(self.moveQueue) > 3:
+            self.moveQueue.pop(3)
+
+    def getAction(self):
+        actions = {
+            'bellow': Action(block=6, strength=3),
+            'thrash': Action(damage=7, block=5),
+            'chomp': Action(damage=12)
+        }
+        self.turns += 1
+        if self.turns == 1:
+            return actions['chomp']
+        else:
+            bellow_chance = 45
+            thrash_chance = 30
+            if len(self.moveQueue) > 1 and self.moveQueue[0] == 'bellow' and self.moveQueue[0] == self.moveQueue[1]:
+                bellow_chance = -1
+                thrash_chance = 52
+            if len(self.moveQueue) > 2 and self.moveQueue[0] == 'thrash' and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == self.moveQueue[2]:
+                bellow_chance = 60
+                thrash_chance = -1
+
+            chance = random.randint(0, 100)
+
+            if chance < bellow_chance:
+                self.updateQueue('bellow')
+                return actions['bellow']
+            elif chance < thrash_chance:
+                self.updateQueue('thrash')
+                return actions['thrash']
+            else:
+                self.updateQueue('chomp')
+                return actions['chomp']
