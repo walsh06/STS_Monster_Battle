@@ -53,11 +53,12 @@ class JawWorm(Monster):
     def getAction(self):
         actions = {
             'bellow': Action(block=6, strength=3),
-            'thrash': Action(damage=7, block=5),
-            'chomp': Action(damage=12)
+            'thrash': Action(damage=self.getDamage(7), block=5),
+            'chomp': Action(damage=self.getDamage(12))
         }
         self.turns += 1
         if self.turns == 1:
+            self.updateQueue('chomp')
             return actions['chomp']
         else:
             bellow_chance = 45
@@ -80,3 +81,31 @@ class JawWorm(Monster):
             else:
                 self.updateQueue('chomp')
                 return actions['chomp']
+
+class FungiBeast(Monster):
+
+    def updateQueue(self, action):
+        self.moveQueue.insert(0, action)
+        if len(self.moveQueue) > 3:
+            self.moveQueue.pop(3)
+
+    def getAction(self):
+        actions = {
+            'grow': Action(strength=3),
+            'bite': Action(damage=self.getDamage(6)),
+        }
+        if len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == 'grow':
+            self.updateQueue('bite')
+            return actions['bite']
+        elif len(self.moveQueue) > 2 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == self.moveQueue[2] and self.moveQueue[0] == 'bite':
+            self.updateQueue('grow')
+            return actions['grow']
+        else:
+            chance = random.randint(0, 100)
+            if chance < 60:
+                self.updateQueue('bite')
+                return actions['bite']
+            else:
+                self.updateQueue('grow')
+                return actions['grow']
+        
