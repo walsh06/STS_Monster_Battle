@@ -2,7 +2,7 @@ import logging
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
-from monsters.misc import Cultist, Pointy, Centurion, JawWorm, FungiBeast
+from monsters.misc import Cultist, Pointy, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse
 
 from utils import print_message
 
@@ -33,7 +33,10 @@ def getMonster(name):
         "Pointy": Pointy("Pointy", 30, 0, 0),
         "Centurion": Centurion("Centurion", 76, 0, 0),
         "Jaw Worm": JawWorm("Jaw Worm", 40, 0, 0),
-        "Fungi Beast": FungiBeast("Fungi Beast", 22, 0, 0)
+        "Fungi Beast": FungiBeast("Fungi Beast", 22, 0, 0),
+        "Red Louse": RedLouse("Red Louse", 10, 0, 0),
+        "Green Louse": GreenLouse("Green Louse", 11, 0, 0)
+
     }
     return monsters[name]
 
@@ -73,7 +76,7 @@ def convertToCSV(results):
             f.write("{},{}\n".format(monster, ",".join([str(monster_results[header]) for header in headers])))
 
 def main():
-    monsters = ("Blue Slaver", "Red Slaver", "Mad Gremlin", "Fat Gremlin", "Gremlin Wizard", "Cultist", "Pointy", "Centurion", "Jaw Worm", "Fungi Beast")
+    monsters = ("Blue Slaver", "Red Slaver", "Mad Gremlin", "Fat Gremlin", "Gremlin Wizard", "Cultist", "Pointy", "Centurion", "Jaw Worm", "Fungi Beast", "Red Louse", "Green Louse")
     results = {}
     for attacker in monsters:
         for defender in monsters:
@@ -85,8 +88,8 @@ def main():
     logging.critical(results)
     convertToCSV(results)
 
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.DEBUG)
 
-main()
+#main()
 
-fight("Cultist", "Fungi Beast", 1)
+fight("Red Louse", "Green Louse", 1)

@@ -94,10 +94,10 @@ class FungiBeast(Monster):
             'grow': Action(strength=3),
             'bite': Action(damage=self.getDamage(6)),
         }
-        if len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == 'grow':
+        if len(self.moveQueue) > 0 and self.moveQueue[0] == 'grow':
             self.updateQueue('bite')
             return actions['bite']
-        elif len(self.moveQueue) > 2 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == self.moveQueue[2] and self.moveQueue[0] == 'bite':
+        elif len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == 'bite':
             self.updateQueue('grow')
             return actions['grow']
         else:
@@ -109,3 +109,80 @@ class FungiBeast(Monster):
                 self.updateQueue('grow')
                 return actions['grow']
         
+class RedLouse(Monster):
+
+    def __init__(self, name, health, strength, dex):
+        super(RedLouse, self).__init__(name, health, strength, dex)
+        self.curl = False
+
+    def updateQueue(self, action):
+        self.moveQueue.insert(0, action)
+        if len(self.moveQueue) > 2:
+            self.moveQueue.pop(2)
+
+    def getAction(self):
+        actions = {
+            'grow': Action(strength=3),
+            'bite': Action(damage=self.getDamage(6))
+        }
+        if len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1]:
+            if self.moveQueue[0] == 'grow':
+                self.updateQueue('bite')
+                return actions['bite']
+            else:
+                self.updateQueue('grow')
+                return actions['grow']
+        else:
+            chance = random.randint(0, 100)
+            if chance < 75:
+                self.updateQueue('bite')
+                return actions['bite']
+            else:
+                self.updateQueue('grow')
+                return actions['grow']
+    
+    def takeDamage(self, damage, hits=1):
+        for hit in range(0, hits):
+            super(RedLouse, self).takeDamage(damage, 1)
+            if not self.curl:
+                self.curl = True
+                self.block = 5
+
+class GreenLouse(Monster):
+
+    def __init__(self, name, health, strength, dex):
+        super(GreenLouse, self).__init__(name, health, strength, dex)
+        self.curl = False
+
+    def updateQueue(self, action):
+        self.moveQueue.insert(0, action)
+        if len(self.moveQueue) > 2:
+            self.moveQueue.pop(2)
+
+    def getAction(self):
+        actions = {
+            'spit web': Action(weak=2),
+            'bite': Action(damage=self.getDamage(6))
+        }
+        if len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1]:
+            if self.moveQueue[0] == 'spit web':
+                self.updateQueue('bite')
+                return actions['bite']
+            else:
+                self.updateQueue('spit web')
+                return actions['spit web']
+        else:
+            chance = random.randint(0, 100)
+            if chance < 75:
+                self.updateQueue('bite')
+                return actions['bite']
+            else:
+                self.updateQueue('spit web')
+                return actions['spit web']
+    
+    def takeDamage(self, damage, hits=1):
+        for hit in range(0, hits):
+            super(GreenLouse, self).takeDamage(damage, 1)
+            if not self.curl:
+                self.curl = True
+                self.block = 5
