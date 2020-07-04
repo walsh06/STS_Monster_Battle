@@ -26,3 +26,15 @@ class GremlinWizard(Monster):
         elif self.turns == 3: 
             self.turns = 0
             return Action(damage=self.getDamage(25))
+
+
+class ShieldGremlin(Monster):
+    
+    def getAction(self):
+        return Action(damage=self.getDamage(6))
+
+
+class SneakyGremlin(Monster):
+
+    def getAction(self):
+        return Action(damage=self.getDamage(9))
