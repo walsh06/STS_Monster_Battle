@@ -88,8 +88,8 @@ def main():
     logging.critical(results)
     convertToCSV(results)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
 
-#main()
+main()
 
-fight("Red Louse", "Green Louse", 1)
+#fight("Red Louse", "Green Louse", 1)
