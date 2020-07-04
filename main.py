@@ -1,10 +1,28 @@
 import logging
+import copy
 
-from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin
+from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
 from monsters.misc import Cultist, Pointy, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse
 
 from utils import print_message
+
+MONSTERS = {
+        "Blue Slaver": BlueSlaver("Blue Slaver", 46, 0, 0),
+        "Red Slaver": RedSlaver("Red Slaver", 46, 0, 0),
+        "Mad Gremlin": MadGremlin("Mad Gremlin", 20, 0, 0),
+        "Gremlin Wizard": GremlinWizard("Gremlin Wizard", 21, 0, 0),
+        "Fat Gremlin": FatGremlin("Fat Gremlin", 13, 0, 0),
+        "Shield Gremlin": ShieldGremlin("Shield Gremlin", 12, 0, 0),
+        "Sneaky Gremlin": SneakyGremlin("Sneaky Gremlin", 10, 0, 0),
+        "Cultist": Cultist("Cultist", 48, 0, 0),
+        "Pointy": Pointy("Pointy", 30, 0, 0),
+        "Centurion": Centurion("Centurion", 76, 0, 0),
+        "Jaw Worm": JawWorm("Jaw Worm", 40, 0, 0),
+        "Fungi Beast": FungiBeast("Fungi Beast", 22, 0, 0),
+        "Red Louse": RedLouse("Red Louse", 10, 0, 0),
+        "Green Louse": GreenLouse("Green Louse", 11, 0, 0),
+    }
 
 def takeTurn(attacker, defender):
     attacker.startTurn()
@@ -22,31 +40,12 @@ def takeTurn(attacker, defender):
         attacker.addStrength(action.strength)
     attacker.endTurn()
 
-def getMonster(name):
-    monsters = {
-        "Blue Slaver": BlueSlaver("Blue Slaver", 46, 0, 0),
-        "Red Slaver": RedSlaver("Red Slaver", 46, 0, 0),
-        "Mad Gremlin": MadGremlin("Mad Gremlin", 20, 0, 0),
-        "Gremlin Wizard": GremlinWizard("Gremlin Wizard", 21, 0, 0),
-        "Fat Gremlin": FatGremlin("Fat Gremlin", 13, 0, 0),
-        "Cultist": Cultist("Cultist", 48, 0, 0),
-        "Pointy": Pointy("Pointy", 30, 0, 0),
-        "Centurion": Centurion("Centurion", 76, 0, 0),
-        "Jaw Worm": JawWorm("Jaw Worm", 40, 0, 0),
-        "Fungi Beast": FungiBeast("Fungi Beast", 22, 0, 0),
-        "Red Louse": RedLouse("Red Louse", 10, 0, 0),
-        "Green Louse": GreenLouse("Green Louse", 11, 0, 0)
-
-    }
-    return monsters[name]
-
 
 def fight(attacker, defender, iterations=1000):
-
     wins = [0,0]
     for x in range(0,iterations):
-        monster_one = getMonster(attacker)
-        monster_two = getMonster(defender)
+        monster_one = copy.deepcopy(MONSTERS[attacker])
+        monster_two = copy.deepcopy(MONSTERS[defender])
         while monster_one.isAlive() and monster_two.isAlive():
             takeTurn(monster_one, monster_two)
             if not monster_two.isAlive():
@@ -76,7 +75,7 @@ def convertToCSV(results):
             f.write("{},{}\n".format(monster, ",".join([str(monster_results[header]) for header in headers])))
 
 def main():
-    monsters = ("Blue Slaver", "Red Slaver", "Mad Gremlin", "Fat Gremlin", "Gremlin Wizard", "Cultist", "Pointy", "Centurion", "Jaw Worm", "Fungi Beast", "Red Louse", "Green Louse")
+    monsters = MONSTERS.keys()
     results = {}
     for attacker in monsters:
         for defender in monsters:
