@@ -6,7 +6,6 @@ from action import Action
 class Cultist(Monster):
 
     def getAction(self):
-        self.turns += 1
         if self.turns == 1:
             return Action()
         else:
@@ -16,12 +15,6 @@ class Cultist(Monster):
         super(Cultist, self).endTurn()
         if self.turns > 1:
             self.strength += 3
-
-
-class Pointy(Monster):
-
-    def getAction(self):
-        return Action(damage=5, hits=2)
 
 
 class Centurion(Monster):
@@ -40,7 +33,7 @@ class Centurion(Monster):
 
 class JawWorm(Monster):
 
-    def __init__(self, name, health, strength, dex):
+    def __init__(self, name, health, strength=0, dex=0):
         super(JawWorm, self).__init__(name, health, strength, dex)
         self.block = 6
         self.strength += 3
@@ -56,7 +49,6 @@ class JawWorm(Monster):
             'thrash': Action(damage=self.getDamage(7), block=5),
             'chomp': Action(damage=self.getDamage(12))
         }
-        self.turns += 1
         if self.turns == 1:
             self.updateQueue('chomp')
             return actions['chomp']
@@ -111,7 +103,7 @@ class FungiBeast(Monster):
         
 class RedLouse(Monster):
 
-    def __init__(self, name, health, strength, dex):
+    def __init__(self, name, health, strength=0, dex=0):
         super(RedLouse, self).__init__(name, health, strength, dex)
         self.curl = False
 
@@ -150,7 +142,7 @@ class RedLouse(Monster):
 
 class GreenLouse(Monster):
 
-    def __init__(self, name, health, strength, dex):
+    def __init__(self, name, health, strength=0, dex=0):
         super(GreenLouse, self).__init__(name, health, strength, dex)
         self.curl = False
 

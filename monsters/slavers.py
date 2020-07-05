@@ -42,7 +42,6 @@ class RedSlaver(Monster):
         "scrape": Action(damage=self.getDamage(8), vunerable=2),
         "stab": Action(damage=self.getDamage(13))
         }
-        self.turns += 1
         if self.turns == 1:
             self.updateQueue('stab')
             return actions['stab']

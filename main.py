@@ -3,25 +3,30 @@ import copy
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
-from monsters.misc import Cultist, Pointy, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse
+from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse
+from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
 
 from utils import print_message
 
 MONSTERS = {
-        "Blue Slaver": BlueSlaver("Blue Slaver", 46, 0, 0),
-        "Red Slaver": RedSlaver("Red Slaver", 46, 0, 0),
-        "Mad Gremlin": MadGremlin("Mad Gremlin", 20, 0, 0),
-        "Gremlin Wizard": GremlinWizard("Gremlin Wizard", 21, 0, 0),
-        "Fat Gremlin": FatGremlin("Fat Gremlin", 13, 0, 0),
-        "Shield Gremlin": ShieldGremlin("Shield Gremlin", 12, 0, 0),
-        "Sneaky Gremlin": SneakyGremlin("Sneaky Gremlin", 10, 0, 0),
-        "Cultist": Cultist("Cultist", 48, 0, 0),
-        "Pointy": Pointy("Pointy", 30, 0, 0),
-        "Centurion": Centurion("Centurion", 76, 0, 0),
-        "Jaw Worm": JawWorm("Jaw Worm", 40, 0, 0),
-        "Fungi Beast": FungiBeast("Fungi Beast", 22, 0, 0),
-        "Red Louse": RedLouse("Red Louse", 10, 0, 0),
-        "Green Louse": GreenLouse("Green Louse", 11, 0, 0),
+        "Blue Slaver": BlueSlaver("Blue Slaver", 46),
+        "Red Slaver": RedSlaver("Red Slaver", 46),
+        "Mad Gremlin": MadGremlin("Mad Gremlin", 20),
+        "Gremlin Wizard": GremlinWizard("Gremlin Wizard", 21),
+        "Fat Gremlin": FatGremlin("Fat Gremlin", 13),
+        "Shield Gremlin": ShieldGremlin("Shield Gremlin", 12),
+        "Sneaky Gremlin": SneakyGremlin("Sneaky Gremlin", 10),
+        "Cultist": Cultist("Cultist", 48),
+        "Centurion": Centurion("Centurion", 76),
+        "Jaw Worm": JawWorm("Jaw Worm", 40),
+        "Fungi Beast": FungiBeast("Fungi Beast", 22),
+        "Red Louse": RedLouse("Red Louse", 10),
+        "Green Louse": GreenLouse("Green Louse", 11),
+        "Bear": Bear("Bear", 38),
+        "Romeo": Romeo("Romeo", 35),
+        "Pointy": Pointy("Pointy", 30),
+        "Mugger": Mugger("Mugger", 48),
+        "Looter": Looter("Looter", 44),
     }
 
 def takeTurn(attacker, defender):
@@ -34,10 +39,13 @@ def takeTurn(attacker, defender):
         defender.makeWeak(action.weak)
     if action.vunerable is not None:
         defender.makeVunerable(action.vunerable)
+    if action.remove_dex is not None:
+        defender.removeDex(action.remove_dex)
     if action.block is not None:
         attacker.addBlock(action.block)
     if action.strength is not None:
         attacker.addStrength(action.strength)
+
     attacker.endTurn()
 
 
