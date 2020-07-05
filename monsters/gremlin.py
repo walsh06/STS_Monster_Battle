@@ -20,7 +20,6 @@ class MadGremlin(Monster):
 class GremlinWizard(Monster):
 
     def getAction(self):
-        self.turns += 1
         if self.turns < 3:
             return Action()
         elif self.turns == 3: 

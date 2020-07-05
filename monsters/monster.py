@@ -6,7 +6,7 @@ from action import Action
 
 class Monster(object):
 
-    def __init__(self, name, health, strength, dex):
+    def __init__(self, name, health, strength=0, dex=0):
         self.name = name
         self.health = health
         self.strength = strength
@@ -55,11 +55,15 @@ class Monster(object):
     def addStrength(self, strength):
         self.strength += strength
 
+    def removeDex(self, dex):
+        self.dex -= dex
+
     def __str__(self):
         return "{} - {} HP".format(self.name, self.health)
 
     def startTurn(self):
         self.block = 0
+        self.turns += 1
 
     def endTurn(self):
         self.weak = 0 if self.weak <= 0 else self.weak-1
