@@ -3,7 +3,7 @@ import copy
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
-from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse
+from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
 
 from utils import print_message
@@ -27,6 +27,7 @@ MONSTERS = {
         "Pointy": Pointy("Pointy", 30),
         "Mugger": Mugger("Mugger", 48),
         "Looter": Looter("Looter", 44),
+        "Byrd": Byrd("Byrd", 25),
     }
 
 def takeTurn(attacker, defender):
