@@ -178,3 +178,76 @@ class GreenLouse(Monster):
             if not self.curl:
                 self.curl = True
                 self.block = 5
+
+class Byrd(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(Byrd, self).__init__(name, health, strength, dex)
+        self.flying = True
+        self.stunned = False
+        self.knockdown_turns = 0
+        
+    def updateQueue(self, action):
+        self.moveQueue.insert(0, action)
+        if len(self.moveQueue) > 1:
+            self.moveQueue.pop(1)
+
+    def getAction(self):
+        if self.flying:
+            actions = {
+                "peck": Action(damage=self.getDamage(1), hits=5),
+                "swoop": Action(damage=self.getDamage(12)),
+                "caw": Action(strength=1),
+            }
+            chance = random.randint(0, 100)
+            peck_chance = 50
+            swoop_chance = 70
+
+            if len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == "peck":
+                peck_chance = -1
+                swoop_chance = 45
+            elif len(self.moveQueue) > 0 and self.moveQueue[0] == "swoop":
+                peck_chance = 60
+                swoop_chance = -1
+            elif len(self.moveQueue) > 0 and self.moveQueue[0] == "caw":
+                peck_chance = 65
+                swoop_chance = 100
+
+            if chance < peck_chance:
+                self.updateQueue("peck")
+                return actions['peck']
+            elif chance < swoop_chance:
+                self.updateQueue("swoop")
+                return actions['swoop']
+            else:
+                self.updateQueue("caw")
+                return actions['caw']
+        else:
+            actions = {
+                "headbutt": Action(damage=self.getDamage(3)),
+                "fly": Action(),
+            }
+            if self.knockdown_turns == 0:
+                self.stunned = False
+                self.knockdown_turns += 1
+                return Action()
+            elif self.knockdown_turns == 1:
+                self.knockdown_turns += 1
+                return actions["headbutt"]
+            else:
+                self.knockdown_turns = 0
+                self.flying = True
+                self.moveQueue = []
+                return actions['fly']
+
+    def takeDamage(self, damage, hits):
+        flying_hits = 0
+        for hit in range(0, hits): 
+            flying_hits += 1
+            if flying_hits < 3:
+                super(Byrd, self).takeDamage(damage*0.5, 1)
+            else:
+                self.stunned = True
+                self.flying = False
+                super(Byrd, self).takeDamage(damage, 1)
+
