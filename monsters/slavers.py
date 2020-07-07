@@ -39,7 +39,7 @@ class RedSlaver(Monster):
 
     def getAction(self):
         actions = {
-        "scrape": Action(damage=self.getDamage(8), vunerable=2),
+        "scrape": Action(damage=self.getDamage(8), vulnerable=2),
         "stab": Action(damage=self.getDamage(13))
         }
         if self.turns == 1:

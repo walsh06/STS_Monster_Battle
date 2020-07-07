@@ -38,11 +38,6 @@ class JawWorm(Monster):
         self.block = 6
         self.strength += 3
 
-    def updateQueue(self, action):
-        self.moveQueue.insert(0, action)
-        if len(self.moveQueue) > 3:
-            self.moveQueue.pop(3)
-
     def getAction(self):
         actions = {
             'bellow': Action(block=6, strength=3),
@@ -50,7 +45,7 @@ class JawWorm(Monster):
             'chomp': Action(damage=self.getDamage(12))
         }
         if self.turns == 1:
-            self.updateQueue('chomp')
+            self.updateQueue('chomp', 3)
             return actions['chomp']
         else:
             bellow_chance = 45
@@ -65,21 +60,16 @@ class JawWorm(Monster):
             chance = random.randint(0, 100)
 
             if chance < bellow_chance:
-                self.updateQueue('bellow')
+                self.updateQueue('bellow', 3)
                 return actions['bellow']
             elif chance < thrash_chance:
-                self.updateQueue('thrash')
+                self.updateQueue('thrash', 3)
                 return actions['thrash']
             else:
-                self.updateQueue('chomp')
+                self.updateQueue('chomp', 3)
                 return actions['chomp']
 
 class FungiBeast(Monster):
-
-    def updateQueue(self, action):
-        self.moveQueue.insert(0, action)
-        if len(self.moveQueue) > 3:
-            self.moveQueue.pop(3)
 
     def getAction(self):
         actions = {
@@ -87,18 +77,18 @@ class FungiBeast(Monster):
             'bite': Action(damage=self.getDamage(6)),
         }
         if len(self.moveQueue) > 0 and self.moveQueue[0] == 'grow':
-            self.updateQueue('bite')
+            self.updateQueue('bite', 3)
             return actions['bite']
         elif len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == 'bite':
-            self.updateQueue('grow')
+            self.updateQueue('grow', 3)
             return actions['grow']
         else:
             chance = random.randint(0, 100)
             if chance < 60:
-                self.updateQueue('bite')
+                self.updateQueue('bite', 3)
                 return actions['bite']
             else:
-                self.updateQueue('grow')
+                self.updateQueue('grow', 3)
                 return actions['grow']
         
 class RedLouse(Monster):
@@ -107,11 +97,6 @@ class RedLouse(Monster):
         super(RedLouse, self).__init__(name, health, strength, dex)
         self.curl = False
 
-    def updateQueue(self, action):
-        self.moveQueue.insert(0, action)
-        if len(self.moveQueue) > 2:
-            self.moveQueue.pop(2)
-
     def getAction(self):
         actions = {
             'grow': Action(strength=3),
@@ -119,18 +104,18 @@ class RedLouse(Monster):
         }
         if len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1]:
             if self.moveQueue[0] == 'grow':
-                self.updateQueue('bite')
+                self.updateQueue('bite', 2)
                 return actions['bite']
             else:
-                self.updateQueue('grow')
+                self.updateQueue('grow', 2)
                 return actions['grow']
         else:
             chance = random.randint(0, 100)
             if chance < 75:
-                self.updateQueue('bite')
+                self.updateQueue('bite', 2)
                 return actions['bite']
             else:
-                self.updateQueue('grow')
+                self.updateQueue('grow', 2)
                 return actions['grow']
     
     def takeDamage(self, damage, hits=1):
@@ -146,11 +131,6 @@ class GreenLouse(Monster):
         super(GreenLouse, self).__init__(name, health, strength, dex)
         self.curl = False
 
-    def updateQueue(self, action):
-        self.moveQueue.insert(0, action)
-        if len(self.moveQueue) > 2:
-            self.moveQueue.pop(2)
-
     def getAction(self):
         actions = {
             'spit web': Action(weak=2),
@@ -158,18 +138,18 @@ class GreenLouse(Monster):
         }
         if len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1]:
             if self.moveQueue[0] == 'spit web':
-                self.updateQueue('bite')
+                self.updateQueue('bite', 2)
                 return actions['bite']
             else:
-                self.updateQueue('spit web')
+                self.updateQueue('spit web', 2)
                 return actions['spit web']
         else:
             chance = random.randint(0, 100)
             if chance < 75:
-                self.updateQueue('bite')
+                self.updateQueue('bite', 2)
                 return actions['bite']
             else:
-                self.updateQueue('spit web')
+                self.updateQueue('spit web', 2)
                 return actions['spit web']
     
     def takeDamage(self, damage, hits=1):
@@ -186,11 +166,6 @@ class Byrd(Monster):
         self.flying = True
         self.stunned = False
         self.knockdown_turns = 0
-        
-    def updateQueue(self, action):
-        self.moveQueue.insert(0, action)
-        if len(self.moveQueue) > 1:
-            self.moveQueue.pop(1)
 
     def getAction(self):
         if self.flying:
@@ -214,13 +189,13 @@ class Byrd(Monster):
                 swoop_chance = 100
 
             if chance < peck_chance:
-                self.updateQueue("peck")
+                self.updateQueue("peck", 1)
                 return actions['peck']
             elif chance < swoop_chance:
-                self.updateQueue("swoop")
+                self.updateQueue("swoop", 1)
                 return actions['swoop']
             else:
-                self.updateQueue("caw")
+                self.updateQueue("caw", 1)
                 return actions['caw']
         else:
             actions = {
@@ -251,3 +226,81 @@ class Byrd(Monster):
                 self.flying = False
                 super(Byrd, self).takeDamage(damage, 1)
 
+
+class Chosen(Monster):
+
+    def getAction(self):
+        actions = {
+            "poke": Action(damage=self.getDamage(5), hits=2),
+            "zap": Action(damage=self.getDamage(18)),
+            "debilitate": Action(damage=self.getDamage(10), vulnerable=2),
+            "drain": Action(weak=3, strength=3),
+            "hex": Action()
+        }
+        if self.turns == 1:
+            return actions["poke"]
+        elif self.turns ==2:
+            return actions["hex"]
+        elif self.turns % 2 == 1:
+            chance = random.randint(0, 100)
+            if chance < 50:
+                return actions['debilitate']
+            else:
+                return actions['drain']
+        else:
+            chance = random.randint(0, 100)
+            if chance < 40:
+                return actions['zap']
+            else:
+                return actions['poke']
+
+class Darkling(Monster):
+
+    def getAction(self):
+        actions = {
+            "nip": Action(damage=9),
+            "chomp": Action(damage=8, hits=2),
+            "harden": Action(block=12)
+        }
+        if self.turns == 1:
+            chance = random.randint(0, 100)
+            if chance < 50:
+                self.updateQueue("nip", 1)
+                return actions["nip"]
+            else:
+                self.updateQueue("harden", 1)
+                return actions["harden"]
+        else:
+            nip_chance = 30
+            chomp_chance = 70
+            if self.checkMoveQueueThree("nip"):
+                nip_chance = -1
+                chomp_chance = 55
+            elif self.checkMoveQueueTwo("harden"):
+                nip_chance = 45
+                chomp_chance = 100
+            elif self.checkMoveQueueTwo("chomp"):
+                nip_chance = 50
+                chomp_chance = -1
+            
+            chance = random.randint(0, 100)
+
+            if chance < nip_chance:
+                self.updateQueue("nip", 1)
+                return actions["nip"]
+            elif chance < chomp_chance:
+                self.updateQueue("chomp")
+                return actions["chomp"]
+            else:
+                self.updateQueue("harden")
+                return actions["harden"]
+
+
+class Exploder(Monster):
+
+    def getAction(self):
+        if self.turns < 3:
+            return Action(damage=9)
+        else:
+            self.health = 0
+            return Action(damage=30)
