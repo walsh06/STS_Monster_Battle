@@ -13,7 +13,7 @@ class Monster(object):
         self.dex = dex
         self.block = 0
         self.weak = 0
-        self.vunerable = 0
+        self.vulnerable = 0
         self.frail = 0
         self.moveQueue = []
         self.turns = 0
@@ -22,7 +22,7 @@ class Monster(object):
         pass
 
     def takeDamage(self, damage, hits=1):
-        if self.vunerable > 0:
+        if self.vulnerable > 0:
             damage = damage * 1.5
 
         for x in range(0, hits):
@@ -41,8 +41,8 @@ class Monster(object):
     def makeWeak(self, weak):
         self.weak = weak
     
-    def makeVunerable(self, vunerable):
-        self.vunerable = vunerable
+    def makevulnerable(self, vulnerable):
+        self.vulnerable = vulnerable
 
     def makeFrail(self, frail):
         self.frail = frail
@@ -67,7 +67,7 @@ class Monster(object):
 
     def endTurn(self):
         self.weak = 0 if self.weak <= 0 else self.weak-1
-        self.vunerable = 0 if self.vunerable <= 0 else self.vunerable-1
+        self.vulnerable = 0 if self.vulnerable <= 0 else self.vulnerable-1
         self.frail = 0 if self.frail <= 0 else self.frail-1
 
     def getDamage(self, baseDamage):
@@ -75,3 +75,14 @@ class Monster(object):
         if self.weak > 0:
             damage = damage * 0.75
         return round(damage)
+
+    def updateQueue(self, action, limit=2):
+        self.moveQueue.insert(0, action)
+        if len(self.moveQueue) > limit:
+            self.moveQueue.pop(limit)
+
+    def checkMoveQueueTwo(self, move):
+        return len(self.moveQueue) > 0 and self.moveQueue[0] == move
+
+    def checkMoveQueueThree(self, move):
+        return len(self.moveQueue) > 1 and self.moveQueue[0] == self.moveQueue[1] and self.moveQueue[0] == move
