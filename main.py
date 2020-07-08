@@ -3,7 +3,7 @@ import copy
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
-from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder
+from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
 
 from utils import print_message
@@ -30,7 +30,8 @@ MONSTERS = {
         "Byrd": Byrd("Byrd", 25),
         "Chosen": Chosen("Chosen", 95),
         "Darkling": Darkling("Darkling", 48),
-        "Exploder": Exploder("Exploder", 30)
+        "Exploder": Exploder("Exploder", 30),
+        "The Maw": TheMaw("The Maw", 300)
     }
 
 def takeTurn(attacker, defender):
@@ -43,6 +44,8 @@ def takeTurn(attacker, defender):
         defender.makeWeak(action.weak)
     if action.vulnerable is not None:
         defender.makevulnerable(action.vulnerable)
+    if action.frail is not None:
+        defender.makeFrail(action.frail)
     if action.remove_dex is not None:
         defender.removeDex(action.remove_dex)
     if action.block is not None:

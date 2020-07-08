@@ -304,3 +304,37 @@ class Exploder(Monster):
         else:
             self.health = 0
             return Action(damage=30)
+
+
+class TheMaw(Monster):
+
+    def getAction(self):
+        actions = {
+            "roar": Action(weak=3, frail=3),
+            "drool": Action(strength=3),
+            "slam": Action(damage=self.getDamage(25)),
+            "nom": Action(damage=5, hits=self.turns/2)
+        }
+        if self.turns == 1:
+            self.updateQueue("roar", 1)
+            return actions["roar"]
+        else:
+            chance = random.randint(0, 100)
+
+            if self.moveQueue[0] == "nom":
+                self.updateQueue("drool", 1)
+                return actions["drool"]
+            elif self.moveQueue[0] == "drool" or self.moveQueue[0] == "roar":
+                if chance < 50:
+                    self.updateQueue("nom", 1)
+                    return actions["nom"]
+                else:
+                    self.updateQueue("slam", 1)
+                    return actions["slam"]
+            if self.moveQueue[0] == "slam":                
+                if chance < 50:
+                    self.updateQueue("nom", 1)
+                    return actions["nom"]
+                else:
+                    self.updateQueue("drool", 1)
+                    return actions["drool"]
