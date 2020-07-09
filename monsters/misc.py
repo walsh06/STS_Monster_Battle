@@ -338,3 +338,84 @@ class TheMaw(Monster):
                 else:
                     self.updateQueue("drool", 1)
                     return actions["drool"]
+
+class Mystic(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(Mystic, self).__init__(name, health, strength, dex)
+        self.starting_health = health
+
+    def getAction(self):
+        actions = {
+            "heal": Action(),
+            "buff": Action(strength=2),
+            "attack": Action(damage=self.getDamage(8), frail=2)
+        }
+        if self.starting_health - self.health >= 16 and not self.checkMoveQueueThree("heal"):
+            self.updateQueue("heal", 2)
+            self.health += 16
+            return actions["heal"]
+        else:
+            chance = random.randint(0, 100)
+            if self.checkMoveQueueThree("buff"):
+                action = "attack"
+            elif self.checkMoveQueueThree("attack"):
+                action = "buff"
+            else:
+                chance = random.randint(0, 100)
+                if chance < 60:
+                    action = "attack"
+                else:
+                    action = "buff"
+
+            self.updateQueue(action)
+            return actions[action]
+
+class OrbWalker(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(OrbWalker, self).__init__(name, health, strength, dex)
+        self.burn_count = 0
+
+    def getAction(self):
+        actions = {
+            "laser": Action(damage=self.getDamage(10), strength=3),
+            "claw": Action(damage=self.getDamage(15), strength=3)
+        }
+        if self.checkMoveQueueThree("laser"):
+            action = "claw"
+        elif self.checkMoveQueueThree("claw"):
+            action = "laser"
+        else:
+            chance = random.randint(0, 100)
+            if chance < 60:
+                action = "laser"
+            else:
+                action = "claw"
+        if action == "laser":
+            self.burn_count += 2
+
+        chance = random.randint(0, 100)
+        if chance < ((self.burn_count/(self.burn_count + 30)) * 5):
+            actions[action].damage += 2
+        self.updateQueue(action)
+        return actions[action]
+
+
+class Repulsor(Monster):
+
+    def getAction(self):
+        actions = {
+            "attack": Action(damage=11),
+            "daze": Action()
+        }
+        if self.checkMoveQueueTwo("attack"):
+            action = "daze"
+        else:
+            chance = random.randint(0, 100)
+            if chance < 80:
+                action = "daze"
+            else:
+                action = "attack"
+        self.updateQueue(action)
+        return actions[action]

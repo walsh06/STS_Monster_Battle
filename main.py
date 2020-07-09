@@ -3,7 +3,7 @@ import copy
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
-from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw
+from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
 
 from utils import print_message
@@ -31,7 +31,10 @@ MONSTERS = {
         "Chosen": Chosen("Chosen", 95),
         "Darkling": Darkling("Darkling", 48),
         "Exploder": Exploder("Exploder", 30),
-        "The Maw": TheMaw("The Maw", 300)
+        "The Maw": TheMaw("The Maw", 300),
+        "Mystic": Mystic("Mystic", 48),
+        "Orb Walker": OrbWalker("Orb Walker", 90),
+        "Repulsor": Repulsor("Repulsor", 29)
     }
 
 def takeTurn(attacker, defender):
@@ -75,7 +78,14 @@ def fight(attacker, defender, iterations=1000):
                 break
 
             logging.debug("{} {}".format(monster_one, monster_two))
-    
+        
+        # special case where the exploder exploded but failed to kill
+        # award win to the survivor
+        if monster_two.name == "Exploder" and not monster_two.isAlive():
+            logging.debug("{} wins".format(monster_one.name))
+            wins[0] += 1
+            break
+
     logging.debug("{}: {} wins".format(attacker, wins[0]))
     logging.debug("{}: {} wins".format(defender, wins[1]))
 
@@ -83,6 +93,7 @@ def fight(attacker, defender, iterations=1000):
 
 def convertToCSV(results):
     headers = results.keys()
+    headers.sort()
     with open("results.csv", "w") as f:
         f.write(",{}\n".format(",".join(headers)))
         for monster in headers:
@@ -93,7 +104,9 @@ def main():
     monsters = MONSTERS.keys()
     results = {}
     for attacker in monsters:
+        logging.critical("Starting {}".format(attacker))
         for defender in monsters:
+            logging.critical("{} V {}".format(attacker, defender))
             wins = fight(attacker, defender)
             if attacker not in results:
                 results[attacker] = {}
@@ -106,4 +119,4 @@ logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
-#fight("Red Louse", "Green Louse", 1)
+#fight("Mystic", "Blue Slaver", 1)
