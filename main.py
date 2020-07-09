@@ -79,12 +79,12 @@ def fight(attacker, defender, iterations=1000):
 
             logging.debug("{} {}".format(monster_one, monster_two))
         
-        # special case where the exploder exploded but failed to kill
-        # award win to the survivor
-        if monster_two.name == "Exploder" and not monster_two.isAlive():
-            logging.debug("{} wins".format(monster_one.name))
-            wins[0] += 1
-            break
+            # special case where the exploder exploded but failed to kill
+            # award win to the survivor
+            if monster_two.name == "Exploder" and not monster_two.isAlive():
+                logging.debug("{} wins".format(monster_one.name))
+                wins[0] += 1
+                break
 
     logging.debug("{}: {} wins".format(attacker, wins[0]))
     logging.debug("{}: {} wins".format(defender, wins[1]))
