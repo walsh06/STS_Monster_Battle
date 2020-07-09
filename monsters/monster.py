@@ -17,11 +17,13 @@ class Monster(object):
         self.frail = 0
         self.moveQueue = []
         self.turns = 0
+        self.thorns = 0
+        self.runaway = False
 
     def getAction(self):
         pass
 
-    def takeDamage(self, damage, hits=1):
+    def takeDamage(self, damage, hits=1, attacker=None):
         if self.vulnerable > 0:
             damage = damage * 1.5
 
@@ -34,9 +36,15 @@ class Monster(object):
                 adjusted_damage = 0
             logging.debug("{} takes {} damage".format(self.name, adjusted_damage))
             self.health -= damage
+            
+            if self.thorns > 0:
+                attacker.health -= self.thorns
 
     def isAlive(self):
         return self.health > 0
+
+    def ran_away(self):
+        return self.runaway
 
     def makeWeak(self, weak):
         self.weak = weak

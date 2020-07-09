@@ -12,8 +12,8 @@ class MadGremlin(Monster):
     def getAction(self):
         return Action(damage=self.getDamage(4))
 
-    def takeDamage(self, damage, hits):
-        super(MadGremlin, self).takeDamage(damage, hits)
+    def takeDamage(self, damage, hits, attacker=None):
+        super(MadGremlin, self).takeDamage(damage, hits, attacker)
         self.addStrength(1)
 
 
