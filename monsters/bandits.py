@@ -39,7 +39,7 @@ class Mugger(Monster):
     def startTurn(self):
         super(Mugger, self).startTurn()
         if self.smoke_bombed:
-            self.health = 0
+            self.runaway = True
 
     def getAction(self):
         if self.turns < 3:
@@ -68,7 +68,7 @@ class Looter(Monster):
     def startTurn(self):
         super(Looter, self).startTurn()
         if self.smoke_bombed:
-            self.health = 0
+            self.runaway = True
             
     def getAction(self):
         if self.turns < 3:

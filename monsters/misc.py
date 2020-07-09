@@ -118,9 +118,9 @@ class RedLouse(Monster):
                 self.updateQueue('grow', 2)
                 return actions['grow']
     
-    def takeDamage(self, damage, hits=1):
+    def takeDamage(self, damage, hits=1, attacker=None):
         for hit in range(0, hits):
-            super(RedLouse, self).takeDamage(damage, 1)
+            super(RedLouse, self).takeDamage(damage, 1, attacker)
             if not self.curl:
                 self.curl = True
                 self.block = 5
@@ -152,9 +152,9 @@ class GreenLouse(Monster):
                 self.updateQueue('spit web', 2)
                 return actions['spit web']
     
-    def takeDamage(self, damage, hits=1):
+    def takeDamage(self, damage, hits=1, attacker=None):
         for hit in range(0, hits):
-            super(GreenLouse, self).takeDamage(damage, 1)
+            super(GreenLouse, self).takeDamage(damage, 1, attacker)
             if not self.curl:
                 self.curl = True
                 self.block = 5
@@ -215,16 +215,16 @@ class Byrd(Monster):
                 self.moveQueue = []
                 return actions['fly']
 
-    def takeDamage(self, damage, hits):
+    def takeDamage(self, damage, hits, attacker=None):
         flying_hits = 0
         for hit in range(0, hits): 
             flying_hits += 1
             if flying_hits < 3:
-                super(Byrd, self).takeDamage(damage*0.5, 1)
+                super(Byrd, self).takeDamage(damage*0.5, 1, attacker)
             else:
                 self.stunned = True
                 self.flying = False
-                super(Byrd, self).takeDamage(damage, 1)
+                super(Byrd, self).takeDamage(damage, 1, attacker)
 
 
 class Chosen(Monster):
@@ -419,3 +419,120 @@ class Repulsor(Monster):
                 action = "attack"
         self.updateQueue(action)
         return actions[action]
+
+class ShelledParasite(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(ShelledParasite, self).__init__(name, health, strength, dex)
+        self.armour = 14
+        self.stunned = False
+
+    def getAction(self):
+        actions = {
+            "double strike": Action(damage=7, hits=2),
+            "suck": Action(damage=10),
+            "fell": Action(damage=18, frail=2)
+        }
+        if self.turns == 1:
+            chance = random.randint(0, 100)
+            if chance < 50:
+                action = "double strike"
+            else:
+                action = "suck"
+        elif self.stunned:
+            self.stunned = False
+            self.updateQueue("stunned")
+            return Action()
+        else:
+            double_strike_chance = 40
+            suck_chance = 40
+            if self.checkMoveQueueTwo("fell"):
+                double_strike_chance = 50
+                suck_chance = 100
+            elif self.checkMoveQueueThree("double strike"):
+                double_strike_chance = -1
+                suck_chance = 60
+            elif self.checkMoveQueueThree("suck"):
+                double_strike_chance = 60
+                suck_chance = -1
+
+            chance = random.randint(0, 100)
+            if chance < double_strike_chance:
+                action = "double strike"
+            elif chance < suck_chance:
+                action = "suck"
+            else:
+                action = "fell"
+        
+        if action == "suck":
+            self.health += 10
+        if self.armour > 0:
+            actions[action].block = self.armour
+
+        self.updateQueue(action)
+        return actions[action]
+
+    def takeDamage(self, damage, hits=1, attacker=None):
+
+        for hit in range(0, hits):
+            super(ShelledParasite, self).takeDamage(damage, 1, attacker)
+            if self.block <= 0 and self.armour > 0:
+                self.armour -= 1
+
+            if self.armour <= 0:
+                self.stunned = True
+                self.armour = -1
+                
+
+class SnakePlant(Monster):
+
+    def getAction(self):
+        actions = {
+            "spores": Action(frail=2, weak=2),
+            "chomp": Action(damage=7, hits=3)
+        }
+        
+        if self.checkMoveQueueThree("chomp"):
+            action = "spores"
+        elif self.checkMoveQueueTwo("spores"):
+            action = "chomp"
+        else:
+            chance = random.randint(0, 100)
+            if chance < 65:
+                action = "chomp"
+            else:
+                action = "spores"
+        self.updateQueue(action)
+        return actions[action]
+
+
+class Spiker(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(Spiker, self).__init__(name, health, strength, dex)
+        self.thorns = 3
+        self.buff_count = 0
+
+    def getAction(self):
+        actions = {
+            "attack": Action(damage=7),
+            "buff": Action()
+        }
+        if self.buff_count == 6:
+            action = "attack"
+        elif self.checkMoveQueueThree("attack"):
+            action = "buff"
+        else:
+            chance = random.randint(0, 100)
+            if chance < 50:
+                action = "attack"
+            else:
+                action = "buff"
+
+        if action == "buff":
+            self.thorns += 2
+
+        self.updateQueue(action)
+        return actions[action]
+
+

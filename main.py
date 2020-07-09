@@ -3,7 +3,7 @@ import copy
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
-from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor
+from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
 
 from utils import print_message
@@ -34,7 +34,10 @@ MONSTERS = {
         "The Maw": TheMaw("The Maw", 300),
         "Mystic": Mystic("Mystic", 48),
         "Orb Walker": OrbWalker("Orb Walker", 90),
-        "Repulsor": Repulsor("Repulsor", 29)
+        "Repulsor": Repulsor("Repulsor", 29),
+        "Shelled Parasite": ShelledParasite("Shelled Parasite", 68),
+        "Snake Plant": SnakePlant("Snake Plant", 75),
+        "Spiker": Spiker("Spiker", 42)
     }
 
 def takeTurn(attacker, defender):
@@ -42,7 +45,7 @@ def takeTurn(attacker, defender):
 
     action = attacker.getAction()
     if action.damage is not None:
-        defender.takeDamage(action.damage, action.hits)
+        defender.takeDamage(action.damage, action.hits, attacker)
     if action.weak is not None:
         defender.makeWeak(action.weak)
     if action.vulnerable is not None:
@@ -64,27 +67,30 @@ def fight(attacker, defender, iterations=1000):
     for x in range(0,iterations):
         monster_one = copy.deepcopy(MONSTERS[attacker])
         monster_two = copy.deepcopy(MONSTERS[defender])
-        while monster_one.isAlive() and monster_two.isAlive():
+        while not monster_one.ran_away() and not monster_two.ran_away():
             takeTurn(monster_one, monster_two)
             if not monster_two.isAlive():
                 logging.debug("{} wins".format(monster_one.name))
                 wins[0] += 1
                 break
-            
+            if not monster_one.isAlive():
+                logging.debug("{} wins".format(monster_two.name))
+                wins[1] += 1
+                break
+
             takeTurn(monster_two, monster_one)
             if not monster_one.isAlive():
                 logging.debug("{} wins".format(monster_two.name))
                 wins[1] += 1
                 break
 
-            logging.debug("{} {}".format(monster_one, monster_two))
-        
-            # special case where the exploder exploded but failed to kill
-            # award win to the survivor
-            if monster_two.name == "Exploder" and not monster_two.isAlive():
+            if not monster_two.isAlive():
                 logging.debug("{} wins".format(monster_one.name))
                 wins[0] += 1
                 break
+
+            logging.debug("{} {}".format(monster_one, monster_two))
+        
 
     logging.debug("{}: {} wins".format(attacker, wins[0]))
     logging.debug("{}: {} wins".format(defender, wins[1]))
@@ -119,4 +125,4 @@ logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
-#fight("Mystic", "Blue Slaver", 1)
+# fight("Spiker", "Blue Slaver", 1)
