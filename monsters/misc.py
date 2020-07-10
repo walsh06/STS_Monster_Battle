@@ -536,3 +536,99 @@ class Spiker(Monster):
         return actions[action]
 
 
+class Snecko(Monster):
+
+    def getAction(self):
+        actions = {
+            "tail whip": Action(damage=8, vulnerable=2),
+            "bite": Action(damage=15)
+        }
+
+        if self.turns == 1:
+            return Action()
+        else:
+            if self.checkMoveQueueThree("bite"):
+                action = "tail whip"
+            else:
+                chance = random.randint(0, 100)
+                if chance < 40:
+                    action = "tail whip"
+                else:
+                    action = "bite"
+        
+        self.updateQueue(action)
+        return actions[action]
+
+
+class SphericGuardian(Monster):
+    
+    def __init__(self, name, health, strength=0, dex=0):
+        super(SphericGuardian, self).__init__(name, health, strength, dex)
+        self.artifact = 3
+        self.block = 40
+
+    def startTurn(self):
+        self.turns += 1
+
+    def getAction(self):
+        actions = {
+            "activate": Action(block=20),
+            "attack": Action(damage=10, frail=5),
+            "slam": Action(damage=10, hits=2),
+            "harden": Action(damage=10, block=15)
+        }
+        if self.turns == 1:
+            action = "activate"
+        elif self.turns == 2:
+            action = "attack"
+        elif self.turns % 2 == 1:
+            action = "slam"
+        else:
+            action = "harden"
+
+        self.updateQueue(action)
+        return actions[action]
+
+class SpireGrowth(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(SpireGrowth, self).__init__(name, health, strength, dex)
+        self.constrict_turns = 0
+
+    def getAction(self):
+        actions = {
+            "quick tackle": Action(damage=16),
+            "smash": Action(damage=22),
+            "constrict": Action(),
+        }
+
+        if self.constrict_turns == 3:
+            action = "smash"
+        elif self.constrict_turns > 0:
+            if self.checkMoveQueueThree("smash"):
+                action = "quick tackle"
+            elif self.checkMoveQueueThree("quick tackle"):
+                action = "smash"
+            else:
+                chance = random.randint(0, 100)
+                if chance < 50:
+                    action = "quick tackle"
+                else:
+                    action = "smash"
+        else:
+            chance = random.randint(0, 100)
+            if self.checkMoveQueueThree("quick tackle") or chance < 50:
+                action = "constrict"
+                self.constrict_turns = 3
+            else:
+                action = "quick tackle"
+
+        if self.constrict_turns == 1 or self.constrict_turns == 2:
+            actions[action].damage += 10
+        self.updateQueue(action)
+        return actions[action]
+
+    def endTurn(self):
+        super(SpireGrowth, self).endTurn()
+        if self.constrict_turns > 0:
+            self.constrict_turns -= 1
