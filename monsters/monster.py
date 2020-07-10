@@ -19,6 +19,7 @@ class Monster(object):
         self.turns = 0
         self.thorns = 0
         self.runaway = False
+        self.artifact = 0
 
     def getAction(self):
         pass
@@ -47,16 +48,25 @@ class Monster(object):
         return self.runaway
 
     def makeWeak(self, weak):
-        self.weak = weak
+        if self.artifact > 0:
+            self.weak = weak
+        else:
+            self.artifact -= 1
     
     def makevulnerable(self, vulnerable):
-        self.vulnerable = vulnerable
+        if self.artifact <= 0:
+            self.vulnerable = vulnerable
+        else:
+            self.artifact -= 1
 
     def makeFrail(self, frail):
-        self.frail = frail
+        if self.artifact <= 0:
+            self.frail = frail
+        else:
+            self.artifact -= 1
 
     def addBlock(self, block):
-        if self.frail > 0:
+        if self.frail <= 0:
             block = block * 0.5
         self.block = block + self.dex
 
@@ -64,8 +74,10 @@ class Monster(object):
         self.strength += strength
 
     def removeDex(self, dex):
-        self.dex -= dex
-
+        if self.artifact <= 0:
+            self.dex -= dex
+        else:
+            self.artifact -= 1
     def __str__(self):
         return "{} - {} HP".format(self.name, self.health)
 
