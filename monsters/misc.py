@@ -640,13 +640,26 @@ class SpireGrowth(Monster):
 
 class Transient(Monster):
 
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(Transient, self).__init__(name, health, strength, dex)
+        self.strength_loss = 0
+
     def getAction(self):
         if self.turns == 5:
-            self.runaway = True
+            self.health = 0
         
-        damage = 30 + ((self.turns - 1) * 10)
+        damage = 30 + ((self.turns - 1) * 10) - self.strength_loss
         return Action(damage=damage)
 
+    def takeDamage(self, damage, hits, attacker):
+        super(Transient, self).takeDamage(damage, hits, attacker)
+        self.strength_loss = damage * hits
+
+    def endTurn(self):
+        super(Transient, self).endTurn()
+        self.strength_loss = 0
+    
 
 class WrithingMass(Monster):
 

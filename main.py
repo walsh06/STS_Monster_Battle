@@ -155,4 +155,4 @@ logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
-# fight("Large Acid Slime", "The Maw", 1)
+# fight("Transient", "The Maw", 1)
