@@ -56,3 +56,9 @@ class RedSlaver(Monster):
                     return actions['stab']
             else:
                 return actions['stab'] if self.moveQueue[0] != "stab" else actions['scrape']
+
+
+class Taskmaster(Monster):
+
+    def getAction(self):
+        return Action(damage=7)

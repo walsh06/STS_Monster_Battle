@@ -78,6 +78,13 @@ class Monster(object):
             self.dex -= dex
         else:
             self.artifact -= 1
+
+    def removeStrength(self, strength):
+        if self.artifact <= 0:
+            self.strength -= strength
+        else:
+            self.artifact -= 1
+
     def __str__(self):
         return "{} - {} HP".format(self.name, self.health)
 

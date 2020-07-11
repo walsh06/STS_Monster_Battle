@@ -1,21 +1,25 @@
 import logging
 import copy
 
-from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
-from monsters.slavers import BlueSlaver, RedSlaver
+from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin, GremlinLeader, GremlinNob
+from monsters.slavers import BlueSlaver, RedSlaver, Taskmaster
 from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
+from monsters.elites import BookOfStabbing, GiantHead, Lagavulin, Nemesis, Sentry, SpireShield, SpireSpear, Reptomancer
 
 from utils import print_message
 
 MONSTERS = {
         "Blue Slaver": BlueSlaver("Blue Slaver", 46),
         "Red Slaver": RedSlaver("Red Slaver", 46),
+        "Taskmaster": Taskmaster("Taskmaster", 54),
         "Mad Gremlin": MadGremlin("Mad Gremlin", 20),
         "Gremlin Wizard": GremlinWizard("Gremlin Wizard", 21),
         "Fat Gremlin": FatGremlin("Fat Gremlin", 13),
         "Shield Gremlin": ShieldGremlin("Shield Gremlin", 12),
         "Sneaky Gremlin": SneakyGremlin("Sneaky Gremlin", 10),
+        "Gremlin Leader": GremlinLeader("Gremlin Leader", 140),
+        "Gremlin Nob": GremlinNob("Gremlin Nob", 82),
         "Cultist": Cultist("Cultist", 48),
         "Centurion": Centurion("Centurion", 76),
         "Jaw Worm": JawWorm("Jaw Worm", 40),
@@ -42,27 +46,41 @@ MONSTERS = {
         "Spheric Guardian": SphericGuardian("Spheric Guardian", 20),
         "Spire Growth": SpireGrowth("Spire Growth", 170),
         "Transient": Transient("Transient", 999),
-        "Writhing Mass": WrithingMass("Writhing Mass", 160)
+        "Writhing Mass": WrithingMass("Writhing Mass", 160),
+        "Book Of Stabbing": BookOfStabbing("Book Of Stabbing", 150),
+        "Giant Head": GiantHead("Giant Head", 500),
+        "Lagavulin": Lagavulin("Lagavulin", 109),
+        "Nemesis": Nemesis("Nemesis", 185),
+        "Sentry": Sentry("Sentry", 38),
+        "Spire Shield": SpireShield("Spire Shield", 110),
+        "Spire Spear": SpireSpear("Spire Spear", 160),
+        "Reptomancer": Reptomancer("Reptomancer", 180)
     }
 
 def takeTurn(attacker, defender):
     attacker.startTurn()
 
-    action = attacker.getAction()
-    if action.damage is not None:
-        defender.takeDamage(action.damage, action.hits, attacker)
-    if action.weak is not None:
-        defender.makeWeak(action.weak)
-    if action.vulnerable is not None:
-        defender.makevulnerable(action.vulnerable)
-    if action.frail is not None:
-        defender.makeFrail(action.frail)
-    if action.remove_dex is not None:
-        defender.removeDex(action.remove_dex)
-    if action.block is not None:
-        attacker.addBlock(action.block)
-    if action.strength is not None:
-        attacker.addStrength(action.strength)
+    actions = attacker.getAction()
+    if not isinstance(actions, list):
+        actions = [actions]
+
+    for action in actions:
+        if action.damage is not None:
+            defender.takeDamage(action.damage, action.hits, attacker)
+        if action.weak is not None:
+            defender.makeWeak(action.weak)
+        if action.vulnerable is not None:
+            defender.makevulnerable(action.vulnerable)
+        if action.frail is not None:
+            defender.makeFrail(action.frail)
+        if action.remove_dex is not None:
+            defender.removeDex(action.remove_dex)
+        if action.remove_strength is not None:
+            defender.removeStrength(action.remove_strength)
+        if action.block is not None:
+            attacker.addBlock(action.block)
+        if action.strength is not None:
+            attacker.addStrength(action.strength)
 
     attacker.endTurn()
 
@@ -130,4 +148,4 @@ logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
-# fight("Spiker", "Blue Slaver", 1)
+# fight("Reptomancer", "Nemesis", 1)

@@ -233,7 +233,7 @@ class Chosen(Monster):
         actions = {
             "poke": Action(damage=self.getDamage(5), hits=2),
             "zap": Action(damage=self.getDamage(18)),
-            "debilitate": Action(damage=self.getDamage(10), vulnerable=2),
+            "debilitate": Action(damage=self.getDamage(10), vulnerable=3),
             "drain": Action(weak=3, strength=3),
             "hex": Action()
         }
@@ -544,7 +544,7 @@ class Snecko(Monster):
 
     def getAction(self):
         actions = {
-            "tail whip": Action(damage=8, vulnerable=2),
+            "tail whip": Action(damage=8, vulnerable=3),
             "bite": Action(damage=15)
         }
 
@@ -657,7 +657,7 @@ class WrithingMass(Monster):
     def getAction(self):
         actions = {
             "defend": Action(damage=15, block=16),
-            "debuff": Action(damage=10, weak=2, vulnerable=2),
+            "debuff": Action(damage=10, weak=2, vulnerable=3),
             "attack_one": Action(damage=7, hits=3),
             "attack_two": Action(damage=32)
         }
