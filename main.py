@@ -1,11 +1,12 @@
 import logging
 import copy
 
-from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin, GremlinLeader, GremlinNob
-from monsters.slavers import BlueSlaver, RedSlaver, Taskmaster
-from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
-from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
-from monsters.elites import BookOfStabbing, GiantHead, Lagavulin, Nemesis, Sentry, SpireShield, SpireSpear, Reptomancer
+from monsters.gremlin import *
+from monsters.slavers import *
+from monsters.misc import *
+from monsters.bandits import *
+from monsters.elites import *
+from monsters.slimes import *
 
 from utils import print_message
 
@@ -54,7 +55,13 @@ MONSTERS = {
         "Sentry": Sentry("Sentry", 38),
         "Spire Shield": SpireShield("Spire Shield", 110),
         "Spire Spear": SpireSpear("Spire Spear", 160),
-        "Reptomancer": Reptomancer("Reptomancer", 180)
+        "Reptomancer": Reptomancer("Reptomancer", 180),
+        "Small Acid Slime": SmallAcidSlime("Small Acid Slime", 8),
+        "Medium Acid Slime": MediumAcidSlime("Medium Acid Slime", 28),
+        "Large Acid Slime": LargeAcidSlime("Large Acide Slime", 65),
+        "Small Spike Slime": SmallSpikeSlime("Small Spike Slime", 10),
+        "Medium Spike Slime": MediumSpikeSlime("Medium Spike Slime", 28),
+        "Large Spike Slime": LargeSpikeSlime("Large Spike Slime", 64)
     }
 
 def takeTurn(attacker, defender):
@@ -148,4 +155,4 @@ logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
-# fight("Reptomancer", "Nemesis", 1)
+# fight("Large Acid Slime", "The Maw", 1)
