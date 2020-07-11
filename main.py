@@ -2,7 +2,7 @@ import logging
 import copy
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
-from monsters.slavers import BlueSlaver, RedSlaver
+from monsters.slavers import BlueSlaver, RedSlaver, Taskmaster
 from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
 
@@ -11,6 +11,7 @@ from utils import print_message
 MONSTERS = {
         "Blue Slaver": BlueSlaver("Blue Slaver", 46),
         "Red Slaver": RedSlaver("Red Slaver", 46),
+        "Taskmaster": Taskmaster("Taskmaster", 54),
         "Mad Gremlin": MadGremlin("Mad Gremlin", 20),
         "Gremlin Wizard": GremlinWizard("Gremlin Wizard", 21),
         "Fat Gremlin": FatGremlin("Fat Gremlin", 13),
