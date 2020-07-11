@@ -1,10 +1,11 @@
 import logging
 import copy
 
-from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
+from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin, GremlinLeader
 from monsters.slavers import BlueSlaver, RedSlaver, Taskmaster
 from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
+from monsters.elites import BookOfStabbing, GiantHead
 
 from utils import print_message
 
@@ -17,6 +18,7 @@ MONSTERS = {
         "Fat Gremlin": FatGremlin("Fat Gremlin", 13),
         "Shield Gremlin": ShieldGremlin("Shield Gremlin", 12),
         "Sneaky Gremlin": SneakyGremlin("Sneaky Gremlin", 10),
+        "Gremlin Leader": GremlinLeader("Gremlin Leader", 140),
         "Cultist": Cultist("Cultist", 48),
         "Centurion": Centurion("Centurion", 76),
         "Jaw Worm": JawWorm("Jaw Worm", 40),
@@ -43,7 +45,9 @@ MONSTERS = {
         "Spheric Guardian": SphericGuardian("Spheric Guardian", 20),
         "Spire Growth": SpireGrowth("Spire Growth", 170),
         "Transient": Transient("Transient", 999),
-        "Writhing Mass": WrithingMass("Writhing Mass", 160)
+        "Writhing Mass": WrithingMass("Writhing Mass", 160),
+        "Book Of Stabbing": BookOfStabbing("Book Of Stabbing", 150),
+        "Giant Head": GiantHead("Giant Head", 500)
     }
 
 def takeTurn(attacker, defender):

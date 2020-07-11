@@ -26,8 +26,38 @@ class BookOfStabbing(Monster):
             else:
                 action = "attack_one"
 
-        if action = "attack_one":
+        if action == "attack_one":
             self.attack_one_count += 1
-            
-        self.updateMoveQueue(action)
+
+        self.updateQueue(action)
+        return actions[action]
+
+class GiantHead(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(GiantHead, self).__init__(name, health, strength, dex)
+        self.its_time_count = 0
+
+    def getAction(self):
+        actions = {
+            "count": Action(damage=13),
+            "its time": Action(damage=30+(self.its_time_count * 5)),
+            "glare": Action(weak=1)
+        }
+        if self.turns < 5:
+            chance = random.randint(0, 100)
+            if self.checkMoveQueueThree("count"):
+                action = "glare"
+            elif self.checkMoveQueueThree("glare"):
+                action = "count"
+            else:
+                if chance < 50:
+                    action = "glare"
+                else:
+                    action = "count"
+        else:
+            self.its_time_count += 1
+            action = "its time"
+
+        self.updateQueue(action)
         return actions[action]

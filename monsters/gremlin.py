@@ -1,6 +1,29 @@
+import random 
+
 from monster import Monster
 from action import Action
 
+class GremlinLeader(Monster):
+
+    def getAction(self):
+        actions = {
+            "stab": Action(damage=self.getDamage(6), hits=3)
+            "encourage": Action(strength=3, block=6)
+        }
+        if self.turns == 1:
+            chance = random.randint(0, 100)
+            if chance < 50:
+                action = "stab"
+            else:
+                action = "encourage"
+        elif self.moveQueue[0] == "stab":
+            action = "encourage"
+        else:
+            action = "stab"
+        self.updateQueue(action)
+        return actions[action]
+
+    
 class FatGremlin(Monster):
 
     def getAction(self):
