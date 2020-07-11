@@ -29,7 +29,7 @@ class GremlinLeader(Monster):
 
     def getAction(self):
         actions = {
-            "stab": Action(damage=self.getDamage(6), hits=3)
+            "stab": Action(damage=self.getDamage(6), hits=3),
             "encourage": Action(strength=3, block=6)
         }
         if self.turns == 1:

@@ -5,7 +5,7 @@ from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremli
 from monsters.slavers import BlueSlaver, RedSlaver, Taskmaster
 from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
-from monsters.elites import BookOfStabbing, GiantHead
+from monsters.elites import BookOfStabbing, GiantHead, Lagavulin, Nemesis, Sentry
 
 from utils import print_message
 
@@ -48,7 +48,10 @@ MONSTERS = {
         "Transient": Transient("Transient", 999),
         "Writhing Mass": WrithingMass("Writhing Mass", 160),
         "Book Of Stabbing": BookOfStabbing("Book Of Stabbing", 150),
-        "Giant Head": GiantHead("Giant Head", 500)
+        "Giant Head": GiantHead("Giant Head", 500),
+        "Lagavulin": Lagavulin("Lagavulin", 109),
+        "Nemesis": Nemesis("Nemesis", 185),
+        "Sentry": Sentry("Sentry", 38)
     }
 
 def takeTurn(attacker, defender):
@@ -65,6 +68,8 @@ def takeTurn(attacker, defender):
         defender.makeFrail(action.frail)
     if action.remove_dex is not None:
         defender.removeDex(action.remove_dex)
+    if action.remove_strength is not None:
+        defender.removeStrength(action.remove_strength)
     if action.block is not None:
         attacker.addBlock(action.block)
     if action.strength is not None:
