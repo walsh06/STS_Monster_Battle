@@ -1,7 +1,7 @@
 import logging
 import copy
 
-from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin, GremlinLeader
+from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin, GremlinLeader, GremlinNob
 from monsters.slavers import BlueSlaver, RedSlaver, Taskmaster
 from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
@@ -19,6 +19,7 @@ MONSTERS = {
         "Shield Gremlin": ShieldGremlin("Shield Gremlin", 12),
         "Sneaky Gremlin": SneakyGremlin("Sneaky Gremlin", 10),
         "Gremlin Leader": GremlinLeader("Gremlin Leader", 140),
+        "Gremlin Nob": GremlinNob("Gremlin Nob", 82),
         "Cultist": Cultist("Cultist", 48),
         "Centurion": Centurion("Centurion", 76),
         "Jaw Worm": JawWorm("Jaw Worm", 40),

@@ -3,6 +3,28 @@ import random
 from monster import Monster
 from action import Action
 
+
+class GremlinNob(Monster):
+
+    def getAction(self):
+        actions = {
+            "skull bash": Action(damage=self.getDamage(6), vulnerable=2),
+            "rush": Action(damage=self.getDamage(14))
+        }
+        if self.turns == 1:
+            return Action()
+        elif self.checkMoveQueueThree("rush"):
+            action = "skull bash"
+        else:
+            chance = random.randint(0, 100)
+            if chance < 33:
+                action = "skull bash"
+            else:
+                action = "rush"
+        self.updateQueue(action)
+        return actions[action]
+
+
 class GremlinLeader(Monster):
 
     def getAction(self):
