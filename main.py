@@ -3,7 +3,7 @@ import copy
 
 from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremlin, SneakyGremlin
 from monsters.slavers import BlueSlaver, RedSlaver
-from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth
+from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
 
 from utils import print_message
@@ -40,7 +40,9 @@ MONSTERS = {
         "Spiker": Spiker("Spiker", 42),
         "Snecko": Snecko("Snecko", 114),
         "Spheric Guardian": SphericGuardian("Spheric Guardian", 20),
-        "Spire Growth": SpireGrowth("Spire Growth", 170)
+        "Spire Growth": SpireGrowth("Spire Growth", 170),
+        "Transient": Transient("Transient", 999),
+        "Writhing Mass": WrithingMass("Writhing Mass", 160)
     }
 
 def takeTurn(attacker, defender):

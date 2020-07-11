@@ -505,6 +505,10 @@ class SnakePlant(Monster):
         self.updateQueue(action)
         return actions[action]
 
+    def takeDamage(self, damage, hits=1, attacker=None):
+        super(SnakePlant, self).takeDamage(damage, hits, attacker)
+        self.block = 3 + (hits - 1)
+
 
 class Spiker(Monster):
 
@@ -632,3 +636,47 @@ class SpireGrowth(Monster):
         super(SpireGrowth, self).endTurn()
         if self.constrict_turns > 0:
             self.constrict_turns -= 1
+
+
+class Transient(Monster):
+
+    def getAction(self):
+        if self.turns == 5:
+            self.runaway = True
+        
+        damage = 30 + ((self.turns - 1) * 10)
+        return Action(damage=damage)
+
+
+class WrithingMass(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(WrithingMass, self).__init__(name, health, strength, dex)
+        self.moveQueue.append('')
+
+    def getAction(self):
+        actions = {
+            "defend": Action(damage=15, block=16),
+            "debuff": Action(damage=10, weak=2, vulnerable=2),
+            "attack_one": Action(damage=7, hits=3),
+            "attack_two": Action(damage=32)
+        }
+        action = self.moveQueue[0]
+
+        while action == self.moveQueue[0]:
+            chance = random.randint(0, 100)
+            if chance < 32:
+                action == "defend"
+            elif chance < 54:
+                action = "debuff"
+            elif chance < 86:
+                action = "attack_one"
+            else:
+                action = "attack_two"
+
+        self.updateQueue(action)
+        return actions[action]
+
+    def takeDamage(self, damage, hits=1, attacker=None):
+        super(WrithingMass, self).takeDamage(damage, hits, attacker)
+        self.block = 3 + (hits - 1)
