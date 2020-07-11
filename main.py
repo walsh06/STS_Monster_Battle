@@ -5,7 +5,7 @@ from monsters.gremlin import FatGremlin, GremlinWizard, MadGremlin, ShieldGremli
 from monsters.slavers import BlueSlaver, RedSlaver, Taskmaster
 from monsters.misc import Cultist, Centurion, JawWorm, FungiBeast, RedLouse, GreenLouse, Byrd, Chosen, Darkling, Exploder, TheMaw, Mystic, OrbWalker, Repulsor, ShelledParasite, SnakePlant, Spiker, Snecko, SphericGuardian, SpireGrowth, Transient, WrithingMass
 from monsters.bandits import Pointy, Romeo, Bear, Mugger, Looter
-from monsters.elites import BookOfStabbing, GiantHead, Lagavulin, Nemesis, Sentry
+from monsters.elites import BookOfStabbing, GiantHead, Lagavulin, Nemesis, Sentry, SpireShield, SpireSpear, Reptomancer
 
 from utils import print_message
 
@@ -51,29 +51,36 @@ MONSTERS = {
         "Giant Head": GiantHead("Giant Head", 500),
         "Lagavulin": Lagavulin("Lagavulin", 109),
         "Nemesis": Nemesis("Nemesis", 185),
-        "Sentry": Sentry("Sentry", 38)
+        "Sentry": Sentry("Sentry", 38),
+        "Spire Shield": SpireShield("Spire Shield", 110),
+        "Spire Spear": SpireSpear("Spire Spear", 160),
+        "Reptomancer": Reptomancer("Reptomancer", 180)
     }
 
 def takeTurn(attacker, defender):
     attacker.startTurn()
 
-    action = attacker.getAction()
-    if action.damage is not None:
-        defender.takeDamage(action.damage, action.hits, attacker)
-    if action.weak is not None:
-        defender.makeWeak(action.weak)
-    if action.vulnerable is not None:
-        defender.makevulnerable(action.vulnerable)
-    if action.frail is not None:
-        defender.makeFrail(action.frail)
-    if action.remove_dex is not None:
-        defender.removeDex(action.remove_dex)
-    if action.remove_strength is not None:
-        defender.removeStrength(action.remove_strength)
-    if action.block is not None:
-        attacker.addBlock(action.block)
-    if action.strength is not None:
-        attacker.addStrength(action.strength)
+    actions = attacker.getAction()
+    if not isinstance(actions, list):
+        actions = [actions]
+
+    for action in actions:
+        if action.damage is not None:
+            defender.takeDamage(action.damage, action.hits, attacker)
+        if action.weak is not None:
+            defender.makeWeak(action.weak)
+        if action.vulnerable is not None:
+            defender.makevulnerable(action.vulnerable)
+        if action.frail is not None:
+            defender.makeFrail(action.frail)
+        if action.remove_dex is not None:
+            defender.removeDex(action.remove_dex)
+        if action.remove_strength is not None:
+            defender.removeStrength(action.remove_strength)
+        if action.block is not None:
+            attacker.addBlock(action.block)
+        if action.strength is not None:
+            attacker.addStrength(action.strength)
 
     attacker.endTurn()
 
@@ -141,4 +148,4 @@ logging.basicConfig(level=logging.CRITICAL)
 
 main()
 
-# fight("Spiker", "Blue Slaver", 1)
+# fight("Reptomancer", "Nemesis", 1)

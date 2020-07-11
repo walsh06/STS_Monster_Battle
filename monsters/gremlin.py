@@ -8,7 +8,7 @@ class GremlinNob(Monster):
 
     def getAction(self):
         actions = {
-            "skull bash": Action(damage=self.getDamage(6), vulnerable=2),
+            "skull bash": Action(damage=self.getDamage(6), vulnerable=3),
             "rush": Action(damage=self.getDamage(14))
         }
         if self.turns == 1:

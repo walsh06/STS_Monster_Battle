@@ -159,10 +159,142 @@ class Nemesis(Monster):
         super(Nemesis, self).takeDamage(damage, hits, attacker)
 
 
-class Sentry(monster):
+class Sentry(Monster):
 
     def getAction(self):
         if self.turns % 2 == 0:
             return Action(damage=9)
         else:
             return Action()
+
+
+class SpireShield(Monster):
+
+    def getAction(self):
+        actions = {
+            "bash": Action(damage=12, remove_strength=1),
+            "fortify": Action(block=30),
+            "smash": Action(damage=34, block=34)
+        }
+
+        if self.turns < 1 and self.turns % 3 == 0:
+            action = "smash"
+        elif self.checkMoveQueueTwo("fortify"):
+            action = "bash"
+        elif self.checkMoveQueueTwo("bash"):
+            action = "fortify"
+        else:
+            chance = random.randint(0, 100)
+            action = "bash" if chance < 50 else "fortify"
+        
+        self.updateQueue(action)
+        return actions[action]
+
+
+class SpireSpear(Monster):
+    
+    def __init__(self, name, health, strength=0, dex=0):
+        super(SpireSpear, self).__init__(name, health, strength, dex)
+        self.burn_count = 0
+
+    def getAction(self):
+        actions = {
+            "burn": Action(damage=self.getDamage(5), hits=2),
+            "piercer": Action(strength=2),
+            "skewer": Action(damage=self.getDamage(10), hits=3)
+        }
+
+        if self.turns == 1:
+            action = "burn"
+        elif self.turns % 3 == 1:
+            action = "skewer"
+        elif self.checkMoveQueueTwo("piercer"):
+            action = "burn"
+        elif self.checkMoveQueueTwo("burn"):
+            action = "piercer"
+        else:
+            chance = random.randint(0, 100)
+            action = "burn" if chance < 50 else "piercer"
+        
+        if action == "debuff":
+            self.burn_count += 2
+
+        chance = random.randint(0, 100)
+        if chance < ((self.burn_count/(self.burn_count + 30)) * 5):
+            actions[action].damage += 2
+        
+        self.updateQueue(action)
+        return actions[action]
+
+class Dagger(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(Dagger, self).__init__(name, health, strength, dex)
+
+    def getAction(self):
+        if self.turns == 1:
+            return Action(damage=9)
+        elif self.turns == 2:
+            self.health = 0
+            return Action(damage=25)
+
+
+class Reptomancer(Monster):
+
+    def __init__(self, name, health, strength=0, dex=0):
+        super(Reptomancer, self).__init__(name, health, strength, dex)
+        self.daggers = [Dagger("Dagger", 20), Dagger("Dagger", 20)]
+
+    def getAction(self):
+        actions = {
+            "snake strike": Action(damage=13, hits=2, weak=1),
+            "big bite": Action(damage=30),
+            "spawn": Action()
+        }
+        all_actions = []
+        if self.turns == 1:
+            action = "spawn"
+        else:
+            snake_strike_chance = 33
+            big_bite_chance = 66
+            
+            if self.checkMoveQueueTwo("snake strike"):
+                snake_strike_chance = -1
+                big_bite_chance = 50
+            elif self.checkMoveQueueTwo("big bite"):
+                snake_strike_chance = 50
+                big_bite_chance = -1
+            elif self.checkMoveQueueThree("spawn"):
+                snake_strike_chance = 50
+                big_bite_chance = 100
+
+            chance = random.randint(0, 100)
+            if chance < snake_strike_chance:
+                action = "snake strike"
+            elif chance < big_bite_chance:
+                action = "big bite"
+            else:
+                action = "spawn"
+
+        all_actions.append(actions[action])
+        for dagger in self.daggers:
+            all_actions.append(dagger.getAction())
+
+        if action == "spawn":
+            self.daggers.append(Dagger("Dagger", 20))
+        
+        self.updateQueue(action)
+        return all_actions  
+
+    def startTurn(self):
+        for dagger in self.daggers:
+            dagger.startTurn()
+        super(Reptomancer, self).startTurn()
+
+    def endTurn(self):
+        for dagger in self.daggers:
+            dagger.endTurn()
+        
+        self.daggers = [dagger for dagger in self.daggers if dagger.health > 0]
+        super(Reptomancer, self).endTurn()
+
